@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container mt-5">
+    <div class="card shadow-lg">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">Comments for: {{ post.title }}</h4>
+        </div>
+        <div class="card-body">
+
+            <p><strong>Total Comments:</strong> {{ count }}</p>
+
+            {% if user.is_authenticated %}
+                <!-- Comment Form -->
+                <div class="mb-4">
+                    <form action="" method="POST">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <textarea name="text" class="form-control" rows="3" placeholder="Write your comment here..."></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-success">Post Comment</button>
+                    </form>
+                </div>
+            {% else %}
+                <div class="alert alert-warning">
+                    <a href="{% url 'login' %}" class="alert-link">Log in</a> to post a comment.
+                </div>
+            {% endif %}
+
+            <h5 class="mt-4">All Comments</h5>
+            {% if comments %}
+                <ul class="list-group mt-3">
+                    {% for comment in comments %}
+                        <li class="list-group-item">
+                            <strong>{{ comment.user.username }}:</strong> {{ comment.text }}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <div class="alert alert-info mt-3">No comments yet. Be the first to comment!</div>
+            {% endif %}
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}

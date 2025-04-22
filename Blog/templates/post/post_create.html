@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <form method="POST" enctype="multipart/form-data" class="p-3 mx-auto mt-5 w-50 card shadow-sm bg-light rounded">
+        <h2>Create Post</h2>
+        {% csrf_token %}
+       
+        <div class="mb-3">
+            <label class="form-label">Title:</label>
+            <input type="text" name="title" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Content:</label>
+            <textarea name="content" class="form-control" required></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Image:</label>
+            <input type="file" name="image" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Category:</label>
+            <select name="category" class="form-select" required>
+                {% for category in category %}  <!-- Fixed variable name -->
+                    <option value="{{ category.id }}">{{ category.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Tags:</label>
+            {% for tag in tags %}
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="tags" value="{{ tag.id }}">  <!-- Fixed name attribute -->
+                    <label class="form-check-label">{{ tag.name }}</label>
+                </div>
+            {% endfor %}
+        </div>
+
+        <button type="submit" class="btn btn-success">Create Post</button>
+    </form>
+{% endblock %}

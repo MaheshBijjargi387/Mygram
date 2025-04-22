@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<!-- Sidebar -->
+<div class="d-flex flex-column p-3 text-white bg-dark position-fixed" style="width: 250px; height: 100vh;">
+    <a href="#" class="d-flex mx-auto align-items-center mb-3 text-white text-decoration-none">
+        <span class="fs-4">MyGram</span>
+    </a>
+    <hr>
+    <ul class="nav nav-pills flex-column mb-auto">
+        <li class="nav-item mx-auto">
+            <a href="{% url 'post_list' %}" class="text-decoration-none mb-4 d-flex align-items-center gap-2 text-white">
+                <i class="fa-solid fa-house fs-4"></i>
+            </a>
+        </li>
+        <li class="nav-item mx-auto">
+            <a href="{% url 'search_view' %}" class="text-decoration-none mb-4 d-flex align-items-center gap-2 text-white">
+                <i class="fa-solid fa-magnifying-glass fs-4"></i>
+            </a>
+        </li>
+        <li class="nav-item mx-auto">
+            <a href="{% url 'post_create' %}" class="text-decoration-none mb-4 d-flex align-items-center gap-2 text-white">
+                <i class="fa-regular fa-plus fs-4"></i>
+            </a>
+        </li>
+        <li class="mx-auto mb-4">
+            <a href="{% url 'user_profile_image' profile_user.username %}" class="d-flex align-items-center gap-2">
+                {% if profile_user.profileimg and profile_user.profileimg.image %}
+                    <img src="{{ profile_user.profileimg.image.url }}" class="rounded-circle" style="width: 42px; height: 42px; object-fit: cover;">
+                {% else %}
+                    <i class="far fa-user-circle fs-4 text-white"></i>
+                {% endif %}
+            </a>
+        </li>
+        <li class="nav-item mx-auto">
+            <a href="{% url 'login_view' %}" class="text-decoration-none mb-4 d-flex align-items-center gap-2 text-white">
+                <i class="fa-solid fa-right-to-bracket fs-4"></i>
+            </a>
+        </li>
+        <li class="nav-item mx-auto">
+            <a href="{% url 'logout' %}" class="nav-link text-white">
+                <i class="bi bi-box-arrow-right"></i> Logout
+            </a>
+        </li>
+    </ul>
+</div>
+
+<!-- Main Content -->
+<div style="margin-left: 260px; height: 80vh;" >
+    <div class="container h-auto mt-4 mx-auto">
+
+        <!-- User Posts -->
+        <div class="row h-auto mx-auto">
+            {% for post in posts %}
+            <div class="col-md-9 mb-4 h- mx-auto">
+                <div class="card shadow-sm">
+                    <a href="{% url 'only' post.id %}">
+                        {% if post.image %}
+                            <img src="{{ post.image.url }}" class="card-img-top vh-75 img-fluid" alt="Post Image" >
+                        {% else %}
+                            <img src="{% static 'default.jpg' %}" class="card-img-top img-fluid" alt="No Image">
+                        {% endif %}
+                    </a>
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-3">
+                                <a href="{% url 'user_profile_image' post.user.username %}" class="d-flex align-items-center gap-2">
+                                    {% if post.user.profileimg and post.user.profileimg.image %}
+                                        <img src="{{ post.user.profileimg.image.url }}" class="rounded-circle img-fluid" style="height: 40px; width: 40px;" alt="User Profile">
+                                    {% else %}
+                                        <i class="fa-regular fa-user-circle fs-3"></i>
+                                    {% endif %}
+                                </a>
+                            </div>
+                            <div class="col-6">
+                                <p class="mb-0 fw-semibold">{{ post.title }}</p>
+                            </div>
+                            <div class="col-3 text-end">
+                                <form action="{% url 'toggle_like' post.id %}" method="POST" class="d-inline">
+                                    {% csrf_token %}
+                                    {% if post.id in liked_post_ids %}
+                                        <button type="submit" class="btn btn-danger btn-sm">Unlike</button>
+                                    {% else %}
+                                        <button type="submit" class="btn btn-outline-primary btn-sm">Like</button>
+                                    {% endif %}
+                                </form>
+                                <span class="badge bg-secondary mt-2">{{ post.likes.count }} Like{{ post.likes.count|pluralize }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}
